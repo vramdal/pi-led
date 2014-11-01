@@ -53,6 +53,7 @@ void writeMatrix();
 void printMatrix(unsigned char output[][129]);
 void init();
 void drawPixel(uint8_t x, uint8_t y, uint8_t color);
+void drawByte(uint8_t x, uint8_t value);
 void setBrightness(uint8_t pwm);
 void blink(int blinky);
 void setChip(uint8_t c);
@@ -127,9 +128,12 @@ void LedModule::drawPixel(uint8_t x, uint8_t y, uint8_t color) {
   }else {
    *(matrix + x) = *(matrix + x) & ~(1 << y); // find the bit in the byte that needs to be turned on;
   }
+}
 
+void LedModule::drawByte(uint8_t x, uint8_t value) {
+  if (x >= width) return;
 
-
+  *(matrix + x) = value;
 }
 
 uint8_t LedModule::scrollMatrixOnce(uint8_t shift) {
@@ -252,7 +256,8 @@ public:
 	~LedMatrix();
 	void writeMessage(char *message);
 	void drawPixel(uint8_t x, uint8_t y, uint8_t color);
-	void writeMatrix(); 
+	void drawByte(uint8_t x, uint8_t value);
+	void writeMatrix();
 	void printMatrix();
 	void clearMatrix();
 private:
@@ -270,7 +275,7 @@ LedMatrix::LedMatrix(int m) {
 	moduleNum = m;
 	_width = 32*moduleNum;
 	_height = 8;
-modules = new LedModule[m];
+    modules = new LedModule[m];
 	fontWidth = 8;
 
 
@@ -304,6 +309,16 @@ void LedMatrix::drawPixel(uint8_t x, uint8_t y, uint8_t color) {
 	x %= 32;
 	modules[m].drawPixel(x, y, color);
  }
+
+void LedMatrix::drawByte(uint8_t x, uint8_t value) {
+  if (x >= _width) return;
+
+  uint8_t m;
+  // figure out which matrix controller it is
+  m = x / 32;
+	x %= 32;
+	modules[m].drawByte(x, value);
+}
 
 void LedMatrix::writeMatrix() {
 	
@@ -441,6 +456,7 @@ public:
   
   static Handle<Value> New(const Arguments& args);
   static Handle<Value> WriteMessage(const Arguments& args);
+  static Handle<Value> WriteBytes(const Arguments& args);
   static void AsyncWork(uv_work_t* req);
   static void AsyncAfter(uv_work_t* req);
 };
@@ -456,6 +472,35 @@ Handle<Value> PiLed::New(const Arguments& args) {
   matrix = new LedMatrix(4);
 
   return scope.Close(args.This());
+}
+
+Handle<Value> PiLed::WriteBytes(const Arguments& args) {
+  HandleScope scope;
+  if (args.Length() < 1) {
+    return ThrowException(Exception::TypeError(String::New("Arguments: Bytes to display")));
+  }
+  if (!args[0]->IsArray()) {
+    return ThrowException(Exception::TypeError(String::New("First argument must be an Array of bytes")));
+  }
+  matrix->clearMatrix();
+  Handle<Array> array = Handle<Array>::Cast(args[0]);
+  for (uint8_t i = 0; i < array->Length(); i++) {
+     uint32_t val32 = array->Get(i)->ToUint32()->Value();
+     uint8_t b = val32 & 0x000000ff;
+
+     matrix->drawByte(i, b);
+  }
+
+
+  //v8::Array arr(args[0]);
+  //uint8_t *bytes[] (byte *) malloc(args[0]->Length());
+  //memcpy(arr, bytes);
+  /*matrix->drawPixel(0, 0, 255);
+  matrix->drawPixel(0, 32, 127);
+  matrix->drawPixel(0, 65, 64);
+  matrix->drawPixel(0, 80, 64);*/
+  matrix->writeMatrix();
+  return Undefined();
 }
 
 
@@ -615,6 +660,7 @@ void RegisterModule(Handle<Object> target) {
   t->InstanceTemplate()->SetInternalFieldCount(1);
   t->SetClassName(String::New("PiLed"));
   NODE_SET_PROTOTYPE_METHOD(t, "WriteMessage", PiLed::WriteMessage);
+  NODE_SET_PROTOTYPE_METHOD(t, "WriteBytes", PiLed::WriteBytes);
 
   target->Set(String::NewSymbol("PiLed"), t->GetFunction());
 
