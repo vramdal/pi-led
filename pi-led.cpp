@@ -1,5 +1,6 @@
 #include <node/node.h>
 #include <node/node_object_wrap.h>
+#include <v8.h>
 
 // C standard library
 #include <cstdlib>
@@ -490,6 +491,7 @@ public:
   static Handle<Value> New(const Arguments& args);
   static Handle<Value> WriteMessage(const Arguments& args);
   static Handle<Value> WriteBytes(const Arguments& args);
+  static Handle<Value> ClearMatrix(const Arguments& args);
   static void AsyncWork(uv_work_t* req);
   static void AsyncAfter(uv_work_t* req);
 };
@@ -509,6 +511,13 @@ Handle<Value> PiLed::New(const Arguments& args) {
   return scope.Close(args.This());
 }
 
+Handle<Value> PiLed::ClearMatrix(const Arguments& args) {
+  HandleScope scope;
+  matrix->clearMatrix();
+  matrix->writeMatrix();
+  return Undefined();
+}
+
 Handle<Value> PiLed::WriteBytes(const Arguments& args) {
   HandleScope scope;
   if (args.Length() < 2) {
@@ -525,10 +534,10 @@ Handle<Value> PiLed::WriteBytes(const Arguments& args) {
   if (x + array->Length() > 256) {
     return ThrowException(Exception::TypeError(String::New("Cannot position bitmap off-screen")));
   }
-  for (uint32_t i = x; i < array->Length(); i++) {
+  for (uint32_t i = 0; i < array->Length(); i++) {
      uint32_t val32 = array->Get(i)->ToUint32()->Value();
      uint8_t b = val32 & 0x000000ff;
-     uint8_t pos = i & 0x000000ff;
+     uint8_t pos = (i + x) & 0x000000ff;
      matrix->drawByte(pos , b);
   }
 
@@ -702,6 +711,7 @@ void RegisterModule(Handle<Object> target) {
   t->SetClassName(String::New("PiLed"));
   NODE_SET_PROTOTYPE_METHOD(t, "WriteMessage", PiLed::WriteMessage);
   NODE_SET_PROTOTYPE_METHOD(t, "WriteBytes", PiLed::WriteBytes);
+  NODE_SET_PROTOTYPE_METHOD(t, "ClearMatrix", PiLed::ClearMatrix);
 
   target->Set(String::NewSymbol("PiLed"), t->GetFunction());
 

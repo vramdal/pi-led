@@ -6,18 +6,31 @@ var message = [126, 32, 16, 8, 126, 0, 28, 34, 34, 34, 28, 0, 32, 32, 124, 34, 3
 var empty = [256];
 for (var i = 0; i < 255; i++) {
     empty[i] = 0;
-    message[i] = i;
 }
 
 var bytes = empty.slice(0);
-for (var i = 0; i < 256; i++) {
-    bytes[i] = i;
-}
+//for (var i = 0; i < message.length; i++) {
+//    bytes[i] = message[i];
+//    bytes[128+i] = message[i];
+//}
 try {
-    led.WriteBytes(bytes, 0);
+    led.ClearMatrix();
+//    led.WriteBytes(bytes, 0);
+    for (var i = 0; i < 128; i++) {
+        led.WriteBytes([message[i]], 128 + i);
+        sleep.usleep(50000);
+    }
 } catch (err) {
     console.error(err);
 }
+
+/*led.ClearMatrix();
+for (var i = 252; i >= 0; i--) {
+    console.log("i", i);
+    led.WriteBytes([1,2,3], i);
+    sleep.usleep(50000);
+} */
+
 /*led.DigitalWrite(40, 0);
 
 while (true) {
