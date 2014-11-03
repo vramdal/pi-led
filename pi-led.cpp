@@ -59,7 +59,7 @@ void blink(int blinky);
 void setChip(uint8_t c);
 uint8_t scrollMatrixOnce(uint8_t shift);
 private:
-  uint8_t width, height, chip;
+  uint8_t width, height, chip, channel;
   uint8_t matrix[32]; // we are assuming the width is 32 and the height is 8
   void *reverseEndian(void *p, size_t size); 
 void selectChip();
@@ -68,6 +68,7 @@ void sendCommand( uint8_t cmd);
 
 void LedModule::setChip(uint8_t c){
 	chip = c;
+	channel = (chip <= 3 ? 0 : 1);
 }
 
 void * LedModule::reverseEndian(void *p, size_t size) {
@@ -83,7 +84,7 @@ void * LedModule::reverseEndian(void *p, size_t size) {
 }
 void LedModule::selectChip()
 {
-	
+
   switch (chip) {
   case 0:
  digitalWrite(0,0);
@@ -107,6 +108,22 @@ digitalWrite(1,1);
  digitalWrite(0,1);
  digitalWrite(1,1);
     break;
+  case 4:
+  digitalWrite(2,0);
+  digitalWrite(3,0);
+  break;
+  case 5:
+  digitalWrite(2,0);
+  digitalWrite(3,1);
+  break;
+  case 6:
+  digitalWrite(2,1);
+  digitalWrite(3,0);
+  break;
+  case 7:
+  digitalWrite(2,1);
+  digitalWrite(3,1);
+  break;
 
 
   }
@@ -180,7 +197,8 @@ void LedModule::writeMatrix(){
   bitarray_copy(matrix, 0, width * height, (output+1), 2);
   selectChip();
   //sendCommand(LED_OFF);
-  wiringPiSPIDataRW(0,output,size+1);
+
+  wiringPiSPIDataRW(channel,output,size+1);
   
   data = WR;
   data <<= 7;
@@ -191,7 +209,7 @@ void LedModule::writeMatrix(){
   data <<= 2;
 
   reverseEndian(&data, sizeof(data));
-  wiringPiSPIDataRW(0, (uint8_t *) &data, 2);
+  wiringPiSPIDataRW(channel, (uint8_t *) &data, 2);
   //sendCommand(LED_ON);
   free(output);
 }
@@ -207,7 +225,7 @@ void LedModule::sendCommand( uint8_t cmd) {
 
   reverseEndian(&data, sizeof(data));
   selectChip();
-  wiringPiSPIDataRW(0, (uint8_t *) &data, 2);
+  wiringPiSPIDataRW(channel, (uint8_t *) &data, 2);
  
 }
 
@@ -227,6 +245,7 @@ void LedModule::setBrightness(uint8_t pwm) {
   sendCommand(PWM_CONTROL | pwm);
 }
 void LedModule::init(){
+ cout << "Initializing chip " << int(chip) << " (channel " << int(channel) << ")" << endl;
  sendCommand(SYS_EN);
  sendCommand(LED_ON);
  sendCommand(MASTER_MODE);
@@ -234,6 +253,7 @@ void LedModule::init(){
  sendCommand(COMMON_8NMOS);
  blink(0);
  setBrightness(15);
+ cout << "Done initializing chip " << int(chip) << " (channel " << int(channel) << ")" << endl;
 }
 LedModule::LedModule() {
 	chip = -1;
@@ -267,31 +287,41 @@ private:
 	LedModule *modules;
 	uint8_t offscreen[8]; // font width;
 	int moduleNum;
-	uint8_t fontWidth, _width, _height;
+	uint8_t fontWidth, _height;
+	uint32_t _width;
 };
 
 LedMatrix::LedMatrix(int m) {
 	int i;
 	moduleNum = m;
 	_width = 32*moduleNum;
+    cout <<  "Modules: " <<  int(moduleNum) << ", width " << int(_width) << endl;
 	_height = 8;
     modules = new LedModule[m];
 	fontWidth = 8;
 
 
 if (wiringPiSPISetup(0, 256000) <0)
-  cout <<  "SPI Setup Failed: " <<  strerror(errno) << endl;
+  cout <<  "SPI Setup Failed for channel 0: " <<  strerror(errno) << endl;
+
+if (wiringPiSPISetup(1, 256000) <0)
+  cout <<  "SPI Setup Failed for channel 1: " <<  strerror(errno) << endl;
+
 
  if (wiringPiSetup() == -1)
    exit(1);
  pinMode(0, OUTPUT);
  pinMode(1, OUTPUT);
+ pinMode(2, OUTPUT);
+ pinMode(3, OUTPUT);
 
 
+cout << "Initializing " << int(m) << " modules" << endl;
 for (i=0; i < m; i++) {
 	modules[i].setChip(i);
 	modules[i].init();
 }
+cout << "Done initializing " << int(m) << " modules" << endl;
 
 }
 
@@ -311,7 +341,10 @@ void LedMatrix::drawPixel(uint8_t x, uint8_t y, uint8_t color) {
  }
 
 void LedMatrix::drawByte(uint8_t x, uint8_t value) {
-  if (x >= _width) return;
+  if (x >= _width) {
+     cout <<  "Attempting to drawByte off screen at pos " <<  int(x) << ", width is " << int(_width) << endl;
+     return;
+  }
 
   uint8_t m;
   // figure out which matrix controller it is
@@ -463,32 +496,40 @@ public:
 
 
 Handle<Value> PiLed::New(const Arguments& args) {
+  cout << "Initializing PiLed" << endl;
   HandleScope scope;
 
   assert(args.IsConstructCall());
   PiLed* self = new PiLed();
   self->Wrap(args.This());
 
-  matrix = new LedMatrix(4);
+  matrix = new LedMatrix(8);
 
+  cout << "Done initializing PiLed" << endl;
   return scope.Close(args.This());
 }
 
 Handle<Value> PiLed::WriteBytes(const Arguments& args) {
   HandleScope scope;
-  if (args.Length() < 1) {
-    return ThrowException(Exception::TypeError(String::New("Arguments: Bytes to display")));
+  if (args.Length() < 2) {
+    return ThrowException(Exception::TypeError(String::New("Arguments: Bytes to display, X-pos")));
   }
   if (!args[0]->IsArray()) {
     return ThrowException(Exception::TypeError(String::New("First argument must be an Array of bytes")));
   }
-  matrix->clearMatrix();
+  if (!args[1]->IsUint32()) {
+    return ThrowException(Exception::TypeError(String::New("Second argument must be an integer < 256")));
+  }
+  uint8_t x = Local<Number>::Cast(args[1])->Uint32Value() & 0x000000ff;
   Handle<Array> array = Handle<Array>::Cast(args[0]);
-  for (uint8_t i = 0; i < array->Length(); i++) {
+  if (x + array->Length() > 256) {
+    return ThrowException(Exception::TypeError(String::New("Cannot position bitmap off-screen")));
+  }
+  for (uint32_t i = x; i < array->Length(); i++) {
      uint32_t val32 = array->Get(i)->ToUint32()->Value();
      uint8_t b = val32 & 0x000000ff;
-
-     matrix->drawByte(i, b);
+     uint8_t pos = i & 0x000000ff;
+     matrix->drawByte(pos , b);
   }
 
 
