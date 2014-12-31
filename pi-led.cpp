@@ -253,7 +253,7 @@ void LedModule::init(){
  sendCommand(INT_RC);
  sendCommand(COMMON_8NMOS);
  blink(0);
- setBrightness(15);
+ setBrightness(1);
  cout << "Done initializing chip " << int(chip) << " (channel " << int(channel) << ")" << endl;
 }
 LedModule::LedModule() {
@@ -281,6 +281,7 @@ public:
 	void writeMatrix();
 	void printMatrix();
 	void clearMatrix();
+	void init();
 private:
 	void drawChar(char c, int offset, uint8_t *buf);
 	void scrollMatrixOnce(int offset);
@@ -324,6 +325,13 @@ for (i=0; i < m; i++) {
 }
 cout << "Done initializing " << int(m) << " modules" << endl;
 
+}
+
+void LedMatrix::init() {
+  int i;
+  for(i = 0; i < moduleNum; i++) {
+    modules[i].init();
+  }
 }
 
 LedMatrix::~LedMatrix() {
@@ -492,6 +500,7 @@ public:
   static Handle<Value> WriteMessage(const Arguments& args);
   static Handle<Value> WriteBytes(const Arguments& args);
   static Handle<Value> ClearMatrix(const Arguments& args);
+  static Handle<Value> Init(const Arguments& args);
   static void AsyncWork(uv_work_t* req);
   static void AsyncAfter(uv_work_t* req);
 };
@@ -515,6 +524,12 @@ Handle<Value> PiLed::ClearMatrix(const Arguments& args) {
   HandleScope scope;
   matrix->clearMatrix();
   matrix->writeMatrix();
+  return Undefined();
+}
+
+Handle<Value> PiLed::Init(const Arguments& args) {
+  HandleScope scope;
+  matrix->init();
   return Undefined();
 }
 
@@ -712,6 +727,7 @@ void RegisterModule(Handle<Object> target) {
   NODE_SET_PROTOTYPE_METHOD(t, "WriteMessage", PiLed::WriteMessage);
   NODE_SET_PROTOTYPE_METHOD(t, "WriteBytes", PiLed::WriteBytes);
   NODE_SET_PROTOTYPE_METHOD(t, "ClearMatrix", PiLed::ClearMatrix);
+  NODE_SET_PROTOTYPE_METHOD(t, "Init", PiLed::Init);
 
   target->Set(String::NewSymbol("PiLed"), t->GetFunction());
 
