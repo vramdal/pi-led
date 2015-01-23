@@ -59,6 +59,7 @@ if [ -e "/.chroot_is_done" ]; then
   echo "Installerer"
   echo "Environment: $(uname -a)"
   npm install
+  echo "Install ferdig";
   #${INSTALL_COMMAND}
 else
   #if [ "${ARCH}" = "arm" ]; then
