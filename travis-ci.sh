@@ -56,15 +56,15 @@ if [ -e "/.chroot_is_done" ]; then
   echo "Running inside chrooted environment"
 
   . ./envvars.sh
+  echo "Running tests"
+  echo "Environment: $(uname -a)"
+
+  ${INSTALL_COMMAND}
 else
-  if [ "${ARCH}" = "arm" ]; then
+  #if [ "${ARCH}" = "arm" ]; then
     # ARM test run, need to set up chrooted environment first
     echo "Setting up chrooted ARM environment"
     setup_arm_chroot
-  fi
+  #fi
 fi
 
-echo "Running tests"
-echo "Environment: $(uname -a)"
-
-${INSTALL_COMMAND}
