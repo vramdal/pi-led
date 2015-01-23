@@ -13,8 +13,8 @@ HOST_DEPENDENCIES="debootstrap qemu-user-static binfmt-support sbuild"
 # Debian package dependencies for the chrooted environment
 GUEST_DEPENDENCIES="build-essential git m4 sudo python"
 
-# Command used to run the tests
-TEST_COMMAND="make test"
+# For installere
+INSTALL_COMMAND="npm install"
 
 function setup_arm_chroot {
     # Host dependencies
@@ -67,4 +67,4 @@ fi
 echo "Running tests"
 echo "Environment: $(uname -a)"
 
-${TEST_COMMAND}
+${INSTALL_COMMAND}
