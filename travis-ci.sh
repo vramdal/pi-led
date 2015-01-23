@@ -56,9 +56,10 @@ if [ -e "/.chroot_is_done" ]; then
   echo "Running inside chrooted environment"
 
   . ./envvars.sh
-  echo "Running tests"
+  echo "Installerer"
   echo "Environment: $(uname -a)"
-  ${INSTALL_COMMAND}
+  npm install
+  #${INSTALL_COMMAND}
 else
   #if [ "${ARCH}" = "arm" ]; then
     # ARM test run, need to set up chrooted environment first
