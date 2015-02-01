@@ -12,9 +12,6 @@
     "dependencies": {
         "node-pre-gyp": "0.5.x"
     },
-    "devDependencies": {
-        "aws-sdk": "*"
-    },
     "binary": {
       "module_name": "pi_led",
       "module_path": "./lib/binding/",
