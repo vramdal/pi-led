@@ -4,8 +4,24 @@
     "private": true,
     "author": "Vidar Ramdal <vramdal@gmail.com>",
     "description": "Control a LED board over Raspberry Pi's SPI",
+    "main": "./pi-led.js",
     "repository": {
 	    "type": "git",
 	    "url": "https://github.com/vramdal/pi-led.git"
-  	}
+  	},
+    "bundledDependencies": {
+        "node-pre-gyp": "0.5.x"
+    },
+    "devDependencies": {
+        "aws-sdk": "*"
+    },
+    "binary": {
+      "module_name": "pi_led",
+      "module_path": "./lib/binding/",
+      "host": "https://sites.google.com",
+      "remote_path" : "./site/vramdal/trafikanten-hjemme/{name}/{toolset}/"
+    },
+    "scripts": {
+      "install" : "node-pre-gyp install --target-arch=arm --target-platform=linux"
+    }
 }
