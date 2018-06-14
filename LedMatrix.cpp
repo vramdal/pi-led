@@ -1,4 +1,7 @@
 #include "LedMatrix.hpp"
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 void LedModule::setChip(uint8_t c){
 	chip = c;
