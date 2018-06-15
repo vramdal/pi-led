@@ -1,6 +1,6 @@
 {
   "name": "pi-led",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "private": true,
   "author": "Vidar Ramdal <vramdal@gmail.com>",
   "description": "Control a LED board over Raspberry Pi's SPI",
@@ -13,12 +13,6 @@
     "node-pre-gyp": "0.10.x"
   },
   "binary": {
-    "module_name": "pi_led",
-    "module_path": "./lib/binding/",
-    "host": "https://sites.google.com",
-    "remote_path": "./site/vramdal/trafikanten-hjemme/{name}/{toolset}/"
-  },
-  "scripts": {
-    "install": "node-pre-gyp install --target-arch=arm --target-platform=linux"
+    "module_name": "pi_led"
   }
 }

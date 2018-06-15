@@ -3,7 +3,18 @@
     {
       "target_name": "PiLed",
       "sources": [ "pi-led.cpp" ],
-      "dependencies": ["bit_array", "wiringPi", "wiringPiSPI"]
+      "dependencies": ["bit_array", "wiringPi", "wiringPiSPI", "LedMatrix"]
+    },
+    {
+      "target_name": "LedMatrix",
+      "type": "static_library",
+      "sources": [ "LedMatrix.cpp" ],
+      "dependencies": ["font"]
+    },
+    {
+      "target_name": "font",
+      "type": "static_library",
+      "sources": [ "font.c" ]
     },
     {
       "target_name": "bit_array",

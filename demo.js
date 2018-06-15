@@ -1,6 +1,9 @@
-var Led = require('./pi-led').PiLed;
+//var led = require('./pi-led');
+var led = require(__dirname + '/build/Release/PiLed.node');
 //var sleep = require('sleep');
-var led = new Led();
+
+//var led = Led();
+led.Init();
 
 var message = [126, 32, 16, 8, 126, 0, 28, 34, 34, 34, 28, 0, 32, 32, 124, 34, 34, 0, 0, 0, 0, 0, 28, 34, 34, 34, 0, 0, 28, 34, 34, 34, 28, 0, 62, 16, 32, 32, 30, 0, 62, 16, 32, 32, 30, 0, 28, 42, 42, 42, 24, 0, 28, 34, 34, 34, 0, 0, 32, 32, 124, 34, 34, 0, 28, 42, 42, 42, 24, 0, 12, 18, 18, 126];
 var empty = [256];
