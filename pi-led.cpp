@@ -65,7 +65,7 @@ namespace {
             isolate->ThrowException(
                     Exception::TypeError(String::NewFromUtf8(isolate, "Second argument must be an integer < 256")));
         }
-        uint8_t x = Local<Number>::Cast(args[1])->Uint32Value() & 0x000000ff;
+        uint8_t x = (uint8_t) (Local<Number>::Cast(args[1])->Uint32Value() & 0x000000ff);
         Handle<Array> array = Handle<Array>::Cast(args[0]);
         if (x + array->Length() > 256) {
             isolate->ThrowException(
@@ -73,8 +73,8 @@ namespace {
         }
         for (uint32_t i = 0; i < array->Length(); i++) {
             uint32_t val32 = array->Get(i)->ToUint32()->Value();
-            uint8_t b = val32 & 0x000000ff;
-            uint8_t pos = (i + x) & 0x000000ff;
+            uint8_t b = (uint8_t) (val32 & 0x000000ff);
+            uint8_t pos = (uint8_t) ((i + x) & 0x000000ff);
             matrix->drawByte(pos, b);
         }
 
