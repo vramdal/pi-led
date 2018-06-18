@@ -8,11 +8,7 @@ set(SOURCE_FILES
     ../bit_array.hpp
     ../font.h
     ../font.c
-    ../wiringPi.c
-    ../wiringPi.h
-    ../wiringPiSPI.c
-    ../wiringPiSPI.h
-    ../LedMatrix.hpp
+        ../LedMatrix.hpp
     ../LedMatrix.cpp
     bootMsg.cpp)
 

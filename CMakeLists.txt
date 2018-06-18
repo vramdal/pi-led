@@ -12,9 +12,6 @@ set(SOURCE_FILES
         LedMatrix.cpp
         LedMatrix.hpp
         pi-led.cpp
-        wiringPi.c
-        wiringPi.h
-        wiringPiSPI.c
-        wiringPiSPI.h)
+        )
 
 add_executable(pi_led ${SOURCE_FILES})

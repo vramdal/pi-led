@@ -1,6 +1,11 @@
 {
   "targets": [
     {
+      "target_name": "wiringPi",
+      "sources": [ "wiringPi.h" ],
+      "dependencies": []
+    },
+    {
       "target_name": "PiLed",
       "sources": [ "pi-led.cpp" ],
       "dependencies": ["bit_array", "wiringPi", "wiringPiSPI", "LedMatrix"]
@@ -20,16 +25,15 @@
       "target_name": "bit_array",
       "type": "static_library",
       "sources": [ "bit_array.cpp" ]
-    },
-    {
-      "target_name": "wiringPi",
-      "type": "static_library",
-      "sources": [ "wiringPi.c" ]
-    },
-    {
-      "target_name": "wiringPiSPI",
-      "type": "static_library",
-      "sources": [ "wiringPiSPI.c" ]
     }
+  ],
+  'include_dirs': [
+      'wiringpi/wiringPi',
+      'wiringpi/devLib',
+      "wiringpi/wiringPiSPI"
+   ],
+  'libraries': [
+      '<!(pwd)/wiringpi/wiringPi/libwiringPi.a',
+      '<!(pwd)/wiringpi/devLib/libwiringPiDev.a'
   ]
 }
