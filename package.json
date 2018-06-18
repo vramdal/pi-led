@@ -1,18 +1,22 @@
 {
   "name": "pi-led",
-  "version": "2.0.0",
-  "private": true,
-  "author": "Vidar Ramdal <vramdal@gmail.com>",
-  "description": "Control a LED board over Raspberry Pi's SPI",
-  "main": "./pi-led.js",
+  "version": "2.2.1",
+  "description": "Bindings to wiringPi",
+  "main": "lib/exports.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "/bin/bash ./install.sh"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vramdal/pi-led.git"
+    "url": "git@github.com:vramdal/pi-led.git"
   },
-  "dependencies": {
-    "node-pre-gyp": "0.10.x"
-  },
-  "binary": {
-    "module_name": "pi_led"
-  }
+  "keywords": [
+    "wiringPi",
+    "gpio",
+    "raspberry",
+    "pi",
+    "raspberrypi"
+  ],
+  "license": "BSD"
 }

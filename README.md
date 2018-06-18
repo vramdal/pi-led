@@ -1,52 +1,41 @@
-# Pi-Led
+Node.js bindings to [wiringPi](http://www.wiringpi.com)
 
-This is a Node.js module that lets you write messages on HT1632 LED Message Boards from your Raspberry Pi, using its built in SPI Bus. 
+Based on the awesome work of [Soarez](https://github.com/Soarez/node-wiring-pi)
 
-It was designed to work with the Raspberry Pi, but it should be easily ported to other platforms that provide an SPI Bus. I use 2 GPIOs to increase the number of Chip Select lines. The whole hardware setup is described here.
-
-## How to Install
-
-```bash
-npm install pi-led
-```
-
-## How to Use
-
-First, require `pi-led`:
-
-```js
-var Led = require('pi-led').PiLed;
-```
-
-Then create an instance of it:
-
-```js
-var led = new Led();
-```
-
-Now you can write messages:
-
-```js
-led.WriteMessage("Hello World!", function(err, result) {
-	// This Callback happens when a message has finished scrolling
-});
-```
-
-An event also gets emitted after a message has finished scrolling:
-
-```js
-led.on('FinishedWrite', function(s) {
-	// Queue up another message to print here
-});
-```
-
-## How to setup the hardware
-
-I put together a long post on how I wired the boards together here. By default, the module is configured for 4 LED Modules, each with 32 LEDs across and 8 LEDs high.
-
-To change this, go muck around in pi-led.cpp and then rebuild the module by going into the module directory and typing:
+## Install
 
 ```
-npm build .
+npm install wiring-pi
 ```
 
+## Usage
+
+```javascript
+var wpi = require('wiring-pi');
+```
+## Documentation
+
+See the [DOCUMENTATION.md](https://github.com/WiringPi/WiringPi-Node/blob/master/DOCUMENTATION.md) file for more detailed documentation.
+
+## Contributing
+
+wiring-pi is an [**OPEN Open Source Project**](http://openopensource.org/). This means that:
+
+> Individuals making significant and valuable contributions are given commit-access to the project to contribute as they see fit. This project is more like an open wiki than a standard guarded open source project.
+
+See the [CONTRIBUTING.md](https://github.com/WiringPi/WiringPi-Node/blob/master/CONTRIBUTING.md) file for more details.
+
+### Contributors
+
+wiring-pi is only possible due to the excellent work of the following contributors:
+
+Contributor | GitHub profile | Twitter profile |
+--- | --- | ---
+Igor Soarez (Creator) | [Soarez](https://github.com/Soarez) | [@igorsoarez](https://twitter.com/igorsoarez)
+Leandre Gohy | [nekuz0r](https://github.com/nekuz0r) | [@LeandreGohy](http://twitter.com/LeandreGohy)
+Eugene Ware | [eugeneware](https://github.com/eugeneware) | [@eugeneware](http://twitter.com/eugeneware)
+Ivo Stratev | [NoHomey](https://github.com/NoHomey) |
+Chris Continanza | [csquared](https://github.com/csquared) | [@csquared](https://twitter.com/em_csquared/)
+Tao Yuan | [taoyuan](https://github.com/taoyuan) | [@taoyvan](https://twitter.com/taoyvan)
+Tom Janson | [tjanson](https://github.com/tjanson) |
+Vincent Terraillon | [LouTerrailloune](https://github.com/LouTerrailloune) | [@pure74vincent](https://twitter.com/pure74vincent)

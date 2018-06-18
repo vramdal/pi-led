@@ -216,7 +216,8 @@ LedMatrix::LedMatrix(int m) {
     modules = new LedModule[m];
 	fontWidth = 8;
 
-
+    cout << "Starting wiringPiSPISetup" << endl;
+    setenv("WIRINGPI_GPIOMEM", "1", 1);
 if (wiringPiSPISetup(0, 256000) <0)
   cout <<  "SPI Setup Failed for channel 0: " <<  strerror(errno) << endl;
 
@@ -224,8 +225,10 @@ if (wiringPiSPISetup(1, 256000) <0)
   cout <<  "SPI Setup Failed for channel 1: " <<  strerror(errno) << endl;
 
 
+    cout << "Starting wiringPiSetup" << endl;
  if (wiringPiSetup() == -1)
    exit(1);
+    cout << "wiringPiSetup complete" << endl;
  pinMode(0, OUTPUT);
  pinMode(1, OUTPUT);
  pinMode(2, OUTPUT);
