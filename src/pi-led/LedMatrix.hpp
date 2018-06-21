@@ -13,8 +13,6 @@
 
 using namespace std;
 extern "C" {
-#include "wiringPiSPI.h"
-#include "wiringPi.h"
 }
 
 #include "bit_array.hpp"

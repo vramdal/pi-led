@@ -1,6 +1,10 @@
 #include <limits.h>
 #include <string.h>
 #include <stddef.h>
+
+#ifndef bit_array_cpp
+#define bit_array_cpp
+
 #include "bit_array.hpp"
 
 
@@ -118,3 +122,4 @@ bitarray_copy(const unsigned char *src_org, int src_offset, int src_len,
         }
     }
 }
+#endif

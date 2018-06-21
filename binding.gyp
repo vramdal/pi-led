@@ -22,7 +22,7 @@
         '<!(pwd)/wiringpi/devLib/libwiringPiDev.a'
       ],
       'cflags': [
-        '-Wall'
+        '-Wno-narrowing'
       ]
     }
   ]

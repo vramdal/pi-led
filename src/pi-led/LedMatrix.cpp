@@ -1,7 +1,12 @@
+#ifndef LedMatrix_cpp
+#define LedMatrix_cpp
+
 #include "LedMatrix.hpp"
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../wiringpi/wiringPi/wiringPiSPI.c"
+#include "../../wiringpi/wiringPi/wiringPi.c"
 
 void LedModule::setChip(uint8_t c){
 	chip = c;
@@ -381,3 +386,4 @@ for (i=0; i < display_len; i++) {
 
 }
 
+#endif

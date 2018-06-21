@@ -8,7 +8,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "../LedMatrix.hpp"
+#include "../src/pi-led/LedMatrix.hpp"
 
 using namespace std;
 

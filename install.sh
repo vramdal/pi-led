@@ -38,18 +38,31 @@ check_git_clone() {
 
 rm ./install.log 2>/dev/null 1>&2
 
+# echo -n "Cloning libwsclient"
+# rm -Rf ./libwsclient 2>/dev/null 1>&2
+# git clone https://github.com/payden/libwsclient.git > ./install.log 2>&1
+# check_git_clone
+# cd libwsclient
+# git reset --hard 5564a6e
+# cd ..
+# echo "done."
+#
+# echo -n "Making libwsclient"
+# cd ./libwsclient
+# . autogen.sh
+# check_make_ok "libwsclient" 1
+# cd ..
+# echo "done."
+
+
 echo -n "Cloning libWiringPi ... "
 rm -Rf ./wiringpi 2>/dev/null 1>&2
-git clone https://github.com/nekuz0r/wiringpi.git -b 2.25 > ./install.log 2>&1
+git clone git://git.drogon.net/wiringPi -b 2.31 wiringpi > ./install.log 2>&1
 check_git_clone
-#git submodule init
-#check_git_clone
-#git submodule update
-#check_git_clone
 echo "done."
 
-patch ./wiringpi/devLib/Makefile < ./patchs/devLib_Makefile.patch
-patch ./wiringpi/gpio/Makefile < ./patchs/gpio_Makefile.patch
+#patch ./wiringpi/devLib/Makefile < ./patchs/devLib_Makefile.patch
+#patch ./wiringpi/gpio/Makefile < ./patchs/gpio_Makefile.patch
 
 echo -n "Making libWiringPi ... "
 cd ./wiringpi/wiringPi/
