@@ -57,7 +57,7 @@ rm ./install.log 2>/dev/null 1>&2
 
 echo -n "Cloning libWiringPi ... "
 rm -Rf ./wiringpi 2>/dev/null 1>&2
-git clone git://git.drogon.net/wiringPi -b 2.31 wiringpi > ./install.log 2>&1
+git clone git://git.drogon.net/wiringPi -b 2.46 wiringpi > ./install.log 2>&1
 check_git_clone
 echo "done."
 

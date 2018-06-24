@@ -15,7 +15,7 @@
  */
 
 // javascript shim that lets our object inherit from EventEmitter
-var PiLed = require(__dirname + '/build/Release/PiLed.node');
+var PiLed = require(__dirname + '/build/Release/piLedAddon.node');
 //var events = require('events');
 
 //inherits(PiLed, events.EventEmitter);

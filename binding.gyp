@@ -5,9 +5,10 @@
       'sources': [
         'src/pi-led/font.c',
         'src/pi-led/bit_array.cpp',
-        'src/pi-led/font.c',
         'src/pi-led/LedMatrix.cpp',
-        'src/pi-led/pi-led.cpp'#,
+        'src/pi-led/pi-led.cpp',
+        'wiringpi/wiringPi/softPwm.c',
+        'wiringpi/wiringPi/softTone.c'
 
        # 'src/wiringPi.cc',
        # 'src/wiringPiSPI.cc' #,
@@ -16,10 +17,6 @@
       'include_dirs': [
         'wiringpi/wiringPi',
         'wiringpi/devLib'
-      ],
-      'libraries': [
-        '<!(pwd)/wiringpi/wiringPi/libwiringPi.a',
-        '<!(pwd)/wiringpi/devLib/libwiringPiDev.a'
       ],
       'cflags': [
         '-Wno-narrowing'

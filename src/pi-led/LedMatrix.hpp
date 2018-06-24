@@ -46,11 +46,12 @@ public:
     void drawByte(uint8_t x, uint8_t value);
     void setBrightness(uint8_t pwm);
     void blink(int blinky);
-    void setChip(uint8_t c);
+    void setChip(uint8_t c, bool useSys);
     uint8_t scrollMatrixOnce(uint8_t shift);
 private:
     uint8_t width, height, chip, channel;
     uint8_t matrix[32]; // we are assuming the width is 32 and the height is 8
+    bool useSys;
     void *reverseEndian(void *p, size_t size);
     void selectChip();
     void sendCommand( uint8_t cmd);
@@ -59,7 +60,7 @@ private:
 
 class LedMatrix {
 public:
-    LedMatrix(int modules);
+    LedMatrix(int modules, bool useSys);
     ~LedMatrix();
     void writeMessage(char *message);
     void drawPixel(uint8_t x, uint8_t y, uint8_t color);
@@ -67,6 +68,7 @@ public:
     void writeMatrix();
     void printMatrix();
     void clearMatrix();
+    void setPin(uint8_t pin, uint8_t value);
     void init();
 private:
     void drawChar(char c, int offset, uint8_t *buf);

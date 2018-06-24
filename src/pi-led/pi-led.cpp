@@ -4,11 +4,14 @@
 #include <cstdlib>
 #include <ctime>
 #include <errno.h>
+#include <unistd.h>
+#include <stdio.h>
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <cstring>
 #include <iostream>
+
 
 using namespace std;
 using namespace node;
@@ -20,6 +23,7 @@ using v8::Local;
 using v8::Number;
 using v8::Object;
 using v8::String;
+using v8::Boolean;
 using v8::Value;
 using v8::Undefined;
 using v8::Handle;
@@ -44,11 +48,40 @@ namespace {
         Isolate *isolate = args.GetIsolate();
         //PiLed *self = new PiLed();
         //self->Wrap(args.This());
+        if (args.Length() < 1) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "Arguments: bool useSys")));
+        }
+        if (!args[0]->IsBoolean()) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "First argument must be a boolean")));
+        }
 
-        matrix = new LedMatrix(8);
+        matrix = new LedMatrix(8, (bool) (Local<Boolean>::Cast(args[0])->BooleanValue()));
         matrix->init();
         cout << "Done initializing PiLed" << endl;
         args.GetReturnValue().Set(Undefined(isolate));
+    }
+
+    void SetPin(const FunctionCallbackInfo<Value> &args) {
+        Isolate *isolate = args.GetIsolate();
+        if (args.Length() < 2) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "Arguments: WiringPi pin number, value")));
+        }
+        if (!args[0]->IsUint32()) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "First argument must be an integer < 41")));
+        }
+        if (!args[1]->IsUint32()) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "Second argument must be an integer < 2")));
+        }
+        uint8_t pin = (uint8_t) (Local<Number>::Cast(args[0])->Uint32Value() & 0x000000ff);
+        uint8_t value = (uint8_t) (Local<Number>::Cast(args[1])->Uint32Value() & 0x000000ff);
+
+        matrix->setPin(pin, value);
+
     }
 
     void WriteBytes(const FunctionCallbackInfo<Value> &args) {
@@ -88,6 +121,7 @@ namespace {
         NODE_SET_METHOD(exports, "WriteBytes", WriteBytes);
         NODE_SET_METHOD(exports, "ClearMatrix", ClearMatrix);
         NODE_SET_METHOD(exports, "Init", Init);
+        NODE_SET_METHOD(exports, "SetPin", SetPin);
     }
 
     NODE_MODULE(NODE_GYP_MODULE_NAME, InitModule)
