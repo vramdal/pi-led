@@ -48,16 +48,20 @@ namespace {
         Isolate *isolate = args.GetIsolate();
         //PiLed *self = new PiLed();
         //self->Wrap(args.This());
-        if (args.Length() < 1) {
+        if (args.Length() < 2) {
             isolate->ThrowException(
-                    Exception::TypeError(String::NewFromUtf8(isolate, "Arguments: bool useSys")));
+                    Exception::TypeError(String::NewFromUtf8(isolate, "Arguments: bool useSys, int spiBusSpeed")));
         }
         if (!args[0]->IsBoolean()) {
             isolate->ThrowException(
                     Exception::TypeError(String::NewFromUtf8(isolate, "First argument must be a boolean")));
         }
+        if (!args[1]->IsUint32()) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "Second argument (spiBusSpeed) must be an integer see (http://wiringpi.com/reference/spi-library/)")));
+        }
 
-        matrix = new LedMatrix(8, (bool) (Local<Boolean>::Cast(args[0])->BooleanValue()));
+        matrix = new LedMatrix(8, (bool) (Local<Boolean>::Cast(args[0])->BooleanValue()), (uint32_t) (Local<Number>::Cast(args[0])->Uint32Value()));
         matrix->init();
         cout << "Done initializing PiLed" << endl;
         args.GetReturnValue().Set(Undefined(isolate));

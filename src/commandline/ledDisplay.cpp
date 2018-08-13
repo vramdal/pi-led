@@ -14,9 +14,9 @@
 
 static LedMatrix *matrix;
 
-void Init(bool useSys) {
+void Init(bool useSys, int spiBusSpeed) {
     cout << "Initializing PiLed" << endl;
-    matrix = new LedMatrix(8, useSys);
+    matrix = new LedMatrix(8, useSys, spiBusSpeed);
     matrix->init();
     cout << "Done initializing PiLed" << endl;
 }
@@ -39,7 +39,7 @@ int WriteBytes(char* buf) {
 }
 
 int main() {
-    Init(true);
+    Init(true, 500000);
     char buf[256];
     fgets(buf, sizeof buf, stdin);
     return WriteBytes(buf);

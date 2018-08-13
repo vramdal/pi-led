@@ -144,11 +144,11 @@ void LedModule::writeMatrix(){
 
 
     bitarray_copy(matrix, 0, width * height, (output+1), 2);
-    cout << "Selecting chip for " << (int) this->chip << endl;
+    //cout << "Selecting chip for " << (int) this->chip << endl;
     selectChip();
     //delay(2000);
     //sendCommand(LED_OFF);
-    cout << "Writing data for " << (int) this->chip << endl;
+    //cout << "Writing data for " << (int) this->chip << endl;
     wiringPiSPIDataRW(channel,output,size+1);
     //delay(2000);
 
@@ -163,7 +163,7 @@ void LedModule::writeMatrix(){
     reverseEndian(&data, sizeof(data));
     //cout << "Writing chip " << (int) this->chip << " value " << (int) matrix[0] << endl;
     wiringPiSPIDataRW(channel, (uint8_t *) &data, 2);
-    usleep(500);
+    //usleep(500);
     //sendCommand(LED_ON);
     free(output);
 }
@@ -224,7 +224,7 @@ LedModule::LedModule(uint8_t c, uint8_t w, uint8_t h) {
 }
 
 
-LedMatrix::LedMatrix(int m, bool useSys) {
+LedMatrix::LedMatrix(int m, bool useSys, int spiBusSpeed = 500000) {
     int i;
     moduleNum = m;
     _width = 32*moduleNum;
@@ -235,7 +235,6 @@ LedMatrix::LedMatrix(int m, bool useSys) {
 
     cout << "Starting wiringPiSPISetup" << endl;
     //setenv("WIRINGPI_GPIOMEM", "1", 1);
-    int spiBusSpeed = 256000;
     //int spiBusSpeed = 10;
     if (wiringPiSPISetup(0, spiBusSpeed) <0)
         cout <<  "SPI Setup Failed for channel 0: " <<  strerror(errno) << endl;

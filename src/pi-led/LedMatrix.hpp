@@ -60,7 +60,7 @@ private:
 
 class LedMatrix {
 public:
-    LedMatrix(int modules, bool useSys);
+    LedMatrix(int modules, bool useSys, int spiBusSpeed);
     ~LedMatrix();
     void writeMessage(char *message);
     void drawPixel(uint8_t x, uint8_t y, uint8_t color);
