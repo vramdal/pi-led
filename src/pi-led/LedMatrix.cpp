@@ -9,8 +9,8 @@
 #include "../../wiringpi/wiringPi/wiringPi.c"
 
 static const uint8_t CHIP_0_GPIO_NR = 17;
-static const uint8_t CHIP_1_GPIO_NR = 18;
-static const uint8_t CHIP_2_GPIO_NR = 27;
+static const uint8_t CHIP_1_GPIO_NR = 27;
+static const uint8_t CHIP_2_GPIO_NR = 18;
 static const uint8_t CHIP_3_GPIO_NR = 22;
 
 void LedModule::setChip(uint8_t c, bool useSys){

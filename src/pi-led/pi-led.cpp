@@ -85,7 +85,34 @@ namespace {
         uint8_t value = (uint8_t) (Local<Number>::Cast(args[1])->Uint32Value() & 0x000000ff);
 
         matrix->setPin(pin, value);
+        args.GetReturnValue().Set(Undefined(isolate));
+    }
 
+    void _DrawByte(const FunctionCallbackInfo<Value> &args) {
+        Isolate *isolate = args.GetIsolate();
+        if (args.Length() < 2) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "Arguments: x, value")));
+        }
+        if (!args[0]->IsUint32()) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "First argument must be an integer < 256")));
+        }
+        if (!args[1]->IsUint32()) {
+            isolate->ThrowException(
+                    Exception::TypeError(String::NewFromUtf8(isolate, "Second argument must be an integer < 8")));
+        }
+        uint8_t x = (uint8_t) (Local<Number>::Cast(args[0])->Uint32Value() & 0x000000ff);
+        uint8_t value = (uint8_t) (Local<Number>::Cast(args[1])->Uint32Value() & 0x000000ff);
+
+        matrix->drawByte(x, value);
+        args.GetReturnValue().Set(Undefined(isolate));
+    }
+
+    void _WriteMatrix(const FunctionCallbackInfo<Value> &args) {
+        Isolate *isolate = args.GetIsolate();
+        matrix->writeMatrix();
+        args.GetReturnValue().Set(Undefined(isolate));
     }
 
     void WriteBytes(const FunctionCallbackInfo<Value> &args) {
@@ -124,6 +151,8 @@ namespace {
     void InitModule(Local<Object> exports) {
         NODE_SET_METHOD(exports, "WriteBytes", WriteBytes);
         NODE_SET_METHOD(exports, "ClearMatrix", ClearMatrix);
+        NODE_SET_METHOD(exports, "_DrawByte", _DrawByte);
+        NODE_SET_METHOD(exports, "_WriteMatrix", _WriteMatrix);
         NODE_SET_METHOD(exports, "Init", Init);
         NODE_SET_METHOD(exports, "SetPin", SetPin);
     }

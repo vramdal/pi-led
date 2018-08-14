@@ -4,22 +4,22 @@ var led = require(__dirname + '/build/Release/piLedAddon.node');
 
 //var led = Led();
 led.Init(true, 32000000);
-led.ClearMatrix();
+//led.ClearMatrix();
 
 //var message = [126, 32, 16, 8, 126, 0, 28, 34, 34, 34, 28, 0, 32, 32, 124, 34, 34, 0, 0, 0, 0, 0, 28, 34, 34, 34, 0, 0, 28, 34, 34, 34, 28, 0, 62, 16, 32, 32, 30, 0, 62, 16, 32, 32, 30, 0, 28, 42, 42, 42, 24, 0, 28, 34, 34, 34, 0, 0, 32, 32, 124, 34, 34, 0, 28, 42, 42, 42, 24, 0, 12, 18, 18, 126];
-var message = [];
-for (var module = 0; module < 8; module++) {
-    for (var x = 0; x < 32; x++) {
-        message.push(2^module/* | 128*/);
-    }
+// var message = [];
+// for (var module = 0; module < 8; module++) {
+//     for (var x = 0; x < 32; x++) {
+//         message.push(2^module/* | 128*/);
+//     }
 
-}
-var empty = [256];
-for (var i = 0; i < 255; i++) {
-    empty[i] = i;
-}
+// }
+// var empty = [256];
+// for (var i = 0; i < 255; i++) {
+//   empty[i] = i;
+// }
 
-var full = [];
+// var full = [];
 /*
 for (var module = 0; module < 8; module++) {
     for (var x = 0; x < 32; x++) {
@@ -29,15 +29,17 @@ for (var module = 0; module < 8; module++) {
 }
 */
 
-var bytes = empty.slice(0);
+// var bytes = empty.slice(0);
 //for (var i = 0; i < message.length; i++) {
 //    bytes[i] = message[i];
 //    bytes[128+i] = message[i];
 //}
 try {
-//    led.ClearMatrix();
+    // led.ClearMatrix();
 //    led.WriteBytes(bytes, 0);
-    led.WriteBytes(message, 0);
+    //led.WriteBytes(message, 0);
+    led._DrawByte(224, 255);
+    led._WriteMatrix();
    // setTimeout(function () {led.WriteBytes(empty, 0)}, 500);
 
     //for (var i = 0; i < 256; i++) {
